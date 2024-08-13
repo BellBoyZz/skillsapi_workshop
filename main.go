@@ -6,11 +6,11 @@ import (
 )
 
 type Skill struct {
-	Key         string   `json:"key"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Logo        string   `json:"logo"`
-	Tags        []string `json:"tags"`
+	Key string `json:"key"`
+	Name string `json:"name"`
+	Description string `json:"description"`
+	Logo string `json:"logo"`
+	Tags []string `json:"tags"`
 }
 
 var skills = []Skill{
@@ -33,7 +33,7 @@ var skills = []Skill{
 func GetSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   skills,
+		"data": skills,
 	})
 }
 
@@ -44,14 +44,14 @@ func GetSkill(c *gin.Context) {
 		if skill.Key == key {
 			c.JSON(http.StatusOK, gin.H{
 				"status": "success",
-				"data":   skill,
+				"data": skill,
 			})
 			return
 		}
 	}
 
 	c.JSON(http.StatusNotFound, gin.H{
-		"status":  "error",
+		"status": "error",
 		"message": "Skill not found",
 	})
 }
@@ -61,7 +61,7 @@ func CreateSkill(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&newSkill); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "error",
+			"status": "error",
 			"message": "Invalid request payload",
 		})
 		return
@@ -70,7 +70,7 @@ func CreateSkill(c *gin.Context) {
 	for _, skill := range skills {
 		if skill.Key == newSkill.Key {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status":  "error",
+				"status": "error",
 				"message": "Skill already exists",
 			})
 			return
@@ -81,7 +81,7 @@ func CreateSkill(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   newSkill,
+		"data": newSkill,
 	})
 }
 
