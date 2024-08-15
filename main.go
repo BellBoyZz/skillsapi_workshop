@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"sync"
 )
 
 type Skill struct {
@@ -13,32 +14,43 @@ type Skill struct {
 	Tags []string `json:"tags"`
 }
 
-var skills = []Skill{
-	{
-		Key: "go",
-		Name: "Go",
-		Description: "Go is a statically typed, compiled programming language designed at Google.",
-		Logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg",
-		Tags: []string{"programming language", "system"},
-	},
-	{
-		Key: "python",
-		Name: "Python",
-		Description: "Python is an interpreted, high-level, general-purpose programming language.",
-		Logo: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
-		Tags: []string{"programming language", "scripting"},
-	},
-}
+var (
+	skills = []Skill {
+		{
+			Key: "go",
+			Name: "Go",
+			Description: "Go is a statically typed, compiled programming language designed at Google.",
+			Logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg",
+			Tags: []string{"programming language", "system"},
+		},
+		{
+			Key: "python",
+			Name: "Python",
+			Description: "Python is an interpreted, high-level, general-purpose programming language.",
+			Logo: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
+			Tags: []string{"programming language", "scripting"},
+		},
+	}
+	mutex sync.RWMutex
+)
 
-func GetSkills(c *gin.Context) {
+
+
+func getSkills(c *gin.Context) {
+	mutex.RLock()
+	defer mutex.RUnlock()
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data": skills,
 	})
 }
 
-func GetSkill(c *gin.Context) {
+func getSkill(c *gin.Context) {
 	key := c.Param("key")
+
+	mutex.RLock()
+	defer mutex.RUnlock() 
 
 	for _, skill := range skills {
 		if skill.Key == key {
@@ -50,13 +62,13 @@ func GetSkill(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusNotFound, gin.H{
+    c.JSON(http.StatusNotFound, gin.H{
 		"status": "error",
 		"message": "Skill not found",
 	})
 }
 
-func CreateSkill(c *gin.Context) {
+func createSkill(c *gin.Context) {
 	var newSkill Skill
 
 	if err := c.ShouldBindJSON(&newSkill); err != nil {
@@ -66,6 +78,9 @@ func CreateSkill(c *gin.Context) {
 		})
 		return
 	}
+
+	mutex.Lock()
+	defer mutex.Unlock()
 
 	for _, skill := range skills {
 		if skill.Key == newSkill.Key {
@@ -88,9 +103,9 @@ func CreateSkill(c *gin.Context) {
 func main() {
 	r := gin.Default()
 
-	r.GET("/api/v1/skills", GetSkills)
-	r.GET("/api/v1/skills/:key", GetSkill)
-	r.POST("/api/v1/skills", CreateSkill)
+	r.GET("/api/v1/skills", getSkills)
+	r.GET("/api/v1/skills/:key", getSkill)
+	r.POST("/api/v1/skills", createSkill)
 
 	r.Run(":8080")
 }
