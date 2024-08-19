@@ -56,7 +56,6 @@ func initDB() {
 func getSkills(c *gin.Context) {
 	rows, err := db.Query(`SELECT key, name, description, logo, tags FROM skills`)
 	if err != nil {
-		// log.Printf("Error executing query: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "error",
 			"message": "Internal server error",
@@ -71,7 +70,6 @@ func getSkills(c *gin.Context) {
 		var tags pq.StringArray
 		err := rows.Scan(&skill.Key, &skill.Name, &skill.Description, &skill.Logo, &tags)
 		if err != nil {
-			// log.Printf("Error scanning row: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status":  "error",
 				"message": "Internal server error",
@@ -83,7 +81,6 @@ func getSkills(c *gin.Context) {
 	}
 
 	if rows.Err() != nil {
-		// log.Printf("Error with rows: %v", rows.Err())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "error",
 			"message": "Internal server error",
@@ -112,7 +109,6 @@ func getSkill(c *gin.Context) {
 		})
 		return
 	} else if err != nil {
-		// log.Printf("Error querying skill: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "error",
 			"message": "Internal server error",
@@ -172,7 +168,6 @@ func createSkill(c *gin.Context) {
 	})
 }
 
-// Helper function to execute update queries and return the updated skill
 func executeUpdate(c *gin.Context, query, errorMessage string, args ...interface{}) {
 	key := c.Param("key")
 
