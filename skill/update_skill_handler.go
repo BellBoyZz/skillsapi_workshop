@@ -1,7 +1,6 @@
 package skill
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,6 @@ type UpdateSkill struct {
 func (h *Handler) UpdateSkill(c *gin.Context) {
 	var updatedSkill UpdateSkill
 	if err := c.ShouldBindJSON(&updatedSkill); err != nil {
-		log.Printf("Error executing query: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "error",
 			"message": "Invalid request payload",
