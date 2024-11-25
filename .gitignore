@@ -65,3 +65,7 @@ frontend/target/
 
 # backend-hot-reload
 /backend/hot_reload_tmp
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
