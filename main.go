@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os/signal"
-	"skillsapi/skill"
+	"skillsapi/app/skill"
 	"syscall"
 	"time"
 

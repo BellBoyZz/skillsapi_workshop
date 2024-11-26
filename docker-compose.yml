@@ -10,3 +10,15 @@ services:
       - '5432:5432'
     volumes:
       - ./migrations:/docker-entrypoint-initdb.d/
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    depends_on:
+      - database
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
