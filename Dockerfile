@@ -2,10 +2,11 @@ FROM cgr.dev/chainguard/go:latest as build
 
 WORKDIR /app
 
-RUN --mount=type=cache,target=/go/pkg/mod/ \
-    --mount=type=bind,source=./go.sum,target=go.sum \
-    --mount=type=bind,source=./go.mod,target=go.mod \
-    go mod download
+COPY go.mod go.sum ./
+
+RUN --mount=type=cache,target=/go/pkg/mod \
+  --mount=type=cache,target=/root/.cache/go-build \
+  go mod download
 
 COPY . .
 
